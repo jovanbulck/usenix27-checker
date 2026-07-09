@@ -1,0 +1,47 @@
+% =============================================================================
+% bad-small-font -- body text set at 9 pt instead of 10 pt.
+%
+% \normalsize is redefined to 9 pt on 10.8 pt leading, the classic
+% "just a bit smaller" squeeze. Both the font size and the leading are
+% below the template values.
+%
+% Expected checker outcome: FAIL with error [font-size] (and [leading]).
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize\@ixpt{10.8}}
+\makeatother
+
+\date{}
+\title{\Large \bf A Submission in Nine Point Type}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\normalsize
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-7]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

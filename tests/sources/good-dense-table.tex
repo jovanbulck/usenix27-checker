@@ -1,0 +1,64 @@
+% =============================================================================
+% good-dense-table -- a dense table must not be read as squeezed body leading.
+%
+% The leading check samples the space between body-text baselines. A table
+% with tightly packed, body-size rows (here \arraystretch 0.5) produces many
+% small baseline gaps; counting those would wrongly flag the whole page as
+% having compressed leading. The checker must sample leading from prose lines
+% only (wide lines that fill the column), not from narrow table cells.
+%
+% Expected checker outcome: PASS with zero findings.
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Compliant Paper with a Dense Table}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-3]
+
+\begin{table}[t]
+  \centering
+  \renewcommand{\arraystretch}{0.5}   % tightly packed rows, body-size text
+  \begin{tabular}{lrrr}
+    device & signal & increase & trials \\
+    alpha  & 10.93  & 0.94     & 519    \\
+    beta   & 11.20  & 0.88     & 604    \\
+    gamma  & 9.75   & 0.91     & 488    \\
+    delta  & 12.06  & 0.79     & 712    \\
+    epsilon& 10.44  & 0.85     & 556    \\
+    zeta   & 11.83  & 0.90     & 631    \\
+    eta    & 9.98   & 0.83     & 502    \\
+    theta  & 12.51  & 0.77     & 745    \\
+    iota   & 10.12  & 0.87     & 529    \\
+    kappa  & 11.37  & 0.92     & 618    \\
+    lambda & 9.66   & 0.81     & 471    \\
+  \end{tabular}
+  \caption{A dense table with tightly packed, body-size rows.}
+\end{table}
+
+\section{Design}
+\lipsum[4-6]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

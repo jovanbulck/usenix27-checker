@@ -1,0 +1,64 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # Rebuild every PDF from its LaTeX source. Builds are reproducible
+  # (SOURCE_DATE_EPOCH + fixed relative output path in build.sh), so
+  # unchanged sources yield byte-identical PDFs and no commit. When a
+  # source changed (or CI's TeX Live differs from whatever built the
+  # committed PDFs), the refreshed PDFs are committed back — CI's TeX Live
+  # is the canonical builder, so this settles after one commit. Pushes made
+  # with GITHUB_TOKEN don't retrigger workflows, so no loop.
+  build:
+    name: build PDFs from LaTeX sources
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-bibtex-extra latexmk
+      - name: Compile test sources
+        run: tests/build.sh
+      - name: Commit refreshed PDFs
+        # Only on pushes to this repo; PR builds just verify compilation.
+        if: github.event_name == 'push'
+        run: |
+          git add tests/pdfs
+          if git diff --cached --quiet; then
+            echo "Committed PDFs are up to date."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "Rebuild test PDFs from LaTeX sources"
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-pdfs
+          path: tests/pdfs/*.pdf
+
+  # Run the checker against the freshly built PDFs.
+  test:
+    name: checker vs built PDFs
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/download-artifact@v4
+        with:
+          name: test-pdfs
+          path: tests/pdfs
+      - run: node tests/run-tests.js

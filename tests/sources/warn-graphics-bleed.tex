@@ -1,0 +1,48 @@
+% =============================================================================
+% warn-graphics-bleed -- a figure that bleeds past the text block.
+%
+% A full-width figure drawn 7.4" wide (via \rule) sticks ~0.4" past the 7"
+% block on one page. Graphics poking out are an honest layout slip, so a
+% bleeding figure is a warning, not an error.
+%
+% Expected checker outcome: PASS with warning [text-block].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission with a Bleeding Figure}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-3]
+
+\begin{figure*}[t]
+  \centering
+  \makebox[0pt]{\rule{7.4in}{1.2in}}
+  \caption{A figure drawn wider than the text block, bleeding into the margins.}
+\end{figure*}
+
+\section{Design}
+\lipsum[4-6]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

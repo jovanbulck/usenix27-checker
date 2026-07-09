@@ -1,0 +1,52 @@
+% =============================================================================
+% bad-titlesec -- section spacing compressed with the titlesec package,
+% explicitly named as forbidden by the CFP.
+%
+% \titlespacing* shrinks the whitespace above/below every section heading
+% from the template's ~14-20 pt to ~2 pt.
+%
+% Expected checker outcome: FAIL with error [heading-space].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{titlesec}
+\usepackage{lipsum}
+
+\titlespacing*{\section}{0pt}{2pt}{2pt}
+\titlespacing*{\subsection}{0pt}{2pt}{2pt}
+
+\date{}
+\title{\Large \bf A Submission Squeezed with titlesec}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-6]
+
+\subsection{Details}
+\lipsum[7]
+
+\section{Evaluation}
+\lipsum[8-9]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

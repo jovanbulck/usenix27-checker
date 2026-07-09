@@ -1,0 +1,143 @@
+{
+  "_comment": [
+    "Expected checker outcome per test PDF (see tests/README.md).",
+    "  ok:       expected overall verdict (true = zero findings).",
+    "  findings: exact multiset of [level, rule] pairs the checker must",
+    "            report -- used where the outcome is fully pinned down.",
+    "  must:     [level, rule] pairs that must be present -- used for the",
+    "            bad-* cases where a trick may trip additional checks."
+  ],
+  "cases": [
+    { "name": "good-unmodified-template",
+      "purpose": "the official USENIX template, verbatim (placeholder author block included)",
+      "ok": true, "findings": [] },
+
+    { "name": "good-baseline",
+      "purpose": "fully compliant short paper",
+      "ok": true, "findings": [] },
+
+    { "name": "good-full-length",
+      "purpose": "compliant paper using the full 13-page body budget",
+      "ok": true, "findings": [] },
+
+    { "name": "good-body-at-limit",
+      "purpose": "boundary: end-matter begins at the top of page 14 (body = exactly 13 pages)",
+      "ok": true, "findings": [] },
+
+    { "name": "bad-body-onto-page14",
+      "purpose": "boundary: body spills a little onto page 14 before the end-matter",
+      "ok": false, "must": [["error", "page-limit"]] },
+
+    { "name": "good-wide-figure",
+      "purpose": "compliant paper with a full-width figure and a table",
+      "ok": true, "findings": [] },
+
+    { "name": "bad-missing-appendices",
+      "purpose": "appendices absent (Open Science required, ethics recommended)",
+      "ok": false,
+      "findings": [["error", "open-science"], ["warning", "ethics"]] },
+
+    { "name": "warn-one-column",
+      "purpose": "single-column layout",
+      "ok": false, "findings": [["warning", "two-column"]] },
+
+    { "name": "bad-metadata-author",
+      "purpose": "author name left in PDF metadata",
+      "ok": false, "findings": [["error", "metadata"]] },
+
+    { "name": "warn-author-names",
+      "purpose": "author block still names authors, affiliation, e-mail",
+      "ok": false, "findings": [["warning", "anonymity"]] },
+
+    { "name": "good-dense-table",
+      "purpose": "a dense body-size table is not read as squeezed body leading",
+      "ok": true, "findings": [] },
+
+    { "name": "good-paragraph-labels",
+      "purpose": "run-in bold \\paragraph/\\textbf labels are not squeezed headings",
+      "ok": true, "findings": [] },
+
+    { "name": "good-author-empty",
+      "purpose": "an empty author block is allowed; front matter still reserves its space",
+      "ok": true, "findings": [] },
+
+    { "name": "warn-overfull-line",
+      "purpose": "honest overfull \\texttt line pokes a few pt into the margin",
+      "ok": false, "findings": [["warning", "text-block"]] },
+
+    { "name": "bad-a4-paper",
+      "purpose": "A4 instead of U.S. letter",
+      "ok": false, "must": [["error", "page-size"]] },
+
+    { "name": "bad-small-font",
+      "purpose": "9 pt body text",
+      "ok": false, "must": [["error", "font-size"]] },
+
+    { "name": "bad-linespread",
+      "purpose": "\\linespread{0.94} leading compression",
+      "ok": false, "must": [["error", "leading"]] },
+
+    { "name": "bad-savetrees",
+      "purpose": "the savetrees package (forbidden by the CFP)",
+      "ok": false,
+      "must": [["error", "leading"], ["error", "heading-space"],
+               ["error", "title-space"]] },
+
+    { "name": "bad-titlesec",
+      "purpose": "titlesec-compressed section spacing (forbidden by the CFP)",
+      "ok": false, "must": [["error", "heading-space"]] },
+
+    { "name": "bad-title-space",
+      "purpose": "\\maketitle whitespace below the title trimmed with \\vspace",
+      "ok": false, "must": [["error", "title-space"]] },
+
+    { "name": "bad-tall-block",
+      "purpose": "\\textheight enlarged to 9.4 inches",
+      "ok": false, "must": [["error", "text-block"]] },
+
+    { "name": "warn-wide-table",
+      "purpose": "one over-wide table (a few lines outside the block): warning, not error",
+      "ok": false, "findings": [["warning", "text-block"]] },
+
+    { "name": "warn-graphics-bleed",
+      "purpose": "a figure drawn wider than the block bleeds into the margin: warning",
+      "ok": false, "findings": [["warning", "text-block"]] },
+
+    { "name": "bad-wide-block",
+      "purpose": "\\textwidth enlarged ~0.5\": text overflows most pages (systematic): error",
+      "ok": false, "must": [["error", "text-block"]] },
+
+    { "name": "bad-body-too-long",
+      "purpose": "main body ends past page 13",
+      "ok": false, "must": [["error", "page-limit"]] },
+
+    { "name": "bad-squeeze-untouched",
+      "purpose": "squeeze deck: untouched template (unfilled placeholder author block, no Open Science appendix)",
+      "ok": false,
+      "findings": [["error", "open-science"], ["warning", "ethics"]] },
+
+    { "name": "bad-squeeze-authors-removed",
+      "purpose": "squeeze deck: author block removed, title/front-matter space trimmed",
+      "ok": false,
+      "findings": [["error", "front-matter"], ["error", "open-science"],
+                   ["warning", "title-space"], ["warning", "ethics"]] },
+
+    { "name": "bad-squeeze-savetrees-moderate",
+      "purpose": "squeeze deck: moderate savetrees compresses leading",
+      "ok": false, "must": [["error", "leading"]] },
+
+    { "name": "bad-squeeze-savetrees-extreme",
+      "purpose": "squeeze deck: extreme savetrees crams everything onto one page",
+      "ok": false,
+      "must": [["error", "leading"], ["error", "heading-space"],
+               ["error", "text-block"], ["error", "title-space"]] },
+
+    { "name": "bad-squeeze-title-space",
+      "purpose": "squeeze deck: title pushed above the block (a few lines: warning)",
+      "ok": false, "must": [["warning", "text-block"]] },
+
+    { "name": "bad-squeeze-titlesec",
+      "purpose": "squeeze deck: titlesec-compressed section spacing",
+      "ok": false, "must": [["error", "heading-space"]] }
+  ]
+}

@@ -1,0 +1,63 @@
+% =============================================================================
+% good-wide-figure -- compliant paper with a full-width figure and a table.
+%
+% A figure* spanning both columns (drawn with \rule so no external file is
+% needed) and a normal table, both with default caption spacing. Graphics
+% within the 7" x 9" block are fine.
+%
+% Expected checker outcome: PASS with zero findings.
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Compliant Submission with Floats}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-3]
+
+\begin{figure*}[t]
+  \centering
+  \rule{6.8in}{1.2in}
+  \caption{A full-width figure at the template's default caption distance.}
+  \label{fig:wide}
+\end{figure*}
+
+\section{Design}
+\lipsum[4-5]
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{lll}
+    system & throughput & latency \\
+    alpha  & 10 op/s    & 3 ms    \\
+    beta   & 20 op/s    & 9 ms    \\
+  \end{tabular}
+  \caption{A normal table within the column.}
+  \label{tab:normal}
+\end{table}
+
+\section{Evaluation}
+\lipsum[6-8]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

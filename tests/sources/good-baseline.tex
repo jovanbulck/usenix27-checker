@@ -1,0 +1,47 @@
+% =============================================================================
+% good-baseline -- a fully compliant short submission.
+%
+% Uses the official usenix.sty unmodified: letter paper, two columns,
+% 10 pt Times on 12 pt leading, author block, the two mandatory appendices
+% (Ethical Considerations, Open Science), and References.
+%
+% Expected checker outcome: PASS with zero findings.
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Fully Compliant USENIX Submission}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-7]
+
+\section{Evaluation}
+\lipsum[8-9]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{2}
+\bibitem{osbook} R.~H.\ Arpaci-Dusseau and A.~C.\ Arpaci-Dusseau.
+  \emph{Operating Systems: Three Easy Pieces}. Arpaci-Dusseau Books, 2015.
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

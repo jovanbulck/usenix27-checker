@@ -1,0 +1,39 @@
+% =============================================================================
+% good-author-empty -- an empty author block is fine (anonymized submission).
+%
+% \author{} leaves nothing between the title and the abstract. The template
+% still reserves the front-matter space, so the body starts at its normal
+% position; the checker must NOT flag an empty author block on its own.
+%
+% Expected checker outcome: PASS with zero findings.
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission With an Empty Author Block}
+\author{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

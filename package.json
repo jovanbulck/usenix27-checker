@@ -1,0 +1,8 @@
+{
+  "name": "usenix27-checker",
+  "description": "Format compliance checker for USENIX Security '27 submissions",
+  "type": "module",
+  "private": true,
+  "bin": { "usenix-check": "./cli.js" },
+  "license": "AGPL-3.0-or-later"
+}

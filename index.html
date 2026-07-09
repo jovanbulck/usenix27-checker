@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USENIX Security '27 PDF format checker</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <p class="eyebrow">USENIX Security '27 · Submission Tooling</p>
+  <h1>PDF Format Checker</h1>
+  <p class="byline">Checks the formatting rules in the
+    <a href="https://www.usenix.org/conference/usenixsecurity27/call-for-papers">Call for Papers</a>.
+    The exact <a href="checker.js">checker</a> the chairs run: thresholds,
+    command line, and sources in the
+    <a href="https://github.com/jovanbulck/usenix27-checker">repository</a>.</p>
+</header>
+
+<p class="prenote"><strong>Pre-release prototype.</strong> This checker is meant
+  to <em>help</em> authors and chairs, not to gatekeep: it measures the rendered
+  PDF and can have false positives, and the submission form will include a text
+  field to briefly explain any finding that does not apply to your paper.
+  Comments and feedback are very welcome:
+  <a href="mailto:jo.vanbulck@kuleuven.be">jo.vanbulck@kuleuven.be</a>.</p>
+
+<label id="drop" for="file">
+  <span class="minipage" aria-hidden="true"></span>
+  <span>
+    <strong>Drop your submission PDF here, or click to browse.</strong>
+    <span class="sub">Checked locally in your browser against the CFP rules;
+      the dashed block is the 7″ × 9″ text area. Nothing is uploaded.</span>
+  </span>
+  <input type="file" id="file" accept="application/pdf">
+</label>
+
+<div id="status">starting…</div>
+
+<div id="verdict">
+  <span class="vbadge" id="vbadge" aria-hidden="true"></span>
+  <span class="vtext">
+    <p id="vtitle"></p>
+    <span id="stats"></span>
+  </span>
+  <button id="copy">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+    <span id="copy-label">Copy report</span></button>
+</div>
+<ul id="findings"></ul>
+<p class="hotcrp-hint" id="hint" hidden>The checker measures the rendered PDF and can
+  have false positives. Investigate every finding carefully and fix what you can; if
+  you are convinced a finding does not apply to your paper, copy the report and
+  briefly explain it in the submission form's compliance text field.</p>
+
+<div id="toolbar">
+  <label class="toggle"><input type="checkbox" id="hideok"> Show only flagged pages</label>
+  <span class="legend">
+    <b class="g">green</b> allowed 7″ × 9″ block ·
+    <b class="b">blue</b> measured content ·
+    <b class="r">red</b> reported problem · click a page to zoom</span>
+</div>
+<div id="pages"></div>
+<div id="zoom" title="click to close"></div>
+
+<footer>Checker runs MuPDF (WASM) in a sandboxed Web Worker, entirely on this
+  device: your PDF never leaves your machine · also available as a command-line
+  tool (<code>node cli.js paper.pdf</code>) · questions, comments, false
+  positives: <a href="mailto:jo.vanbulck@kuleuven.be">jo.vanbulck@kuleuven.be</a>.</footer>
+
+<script>
+  // Module scripts cannot load from file:// pages; explain instead of breaking.
+  if (location.protocol === "file:") {
+    document.body.innerHTML = "<h1>USENIX Security '27 PDF format checker</h1>" +
+      "<p>Browsers do not allow this page to run when opened as a local file " +
+      "(<code>file://</code>). Please use the hosted version, or serve it locally " +
+      "with <code>python3 -m http.server</code> and open " +
+      "<code>http://localhost:8000/</code>.</p>";
+  }
+</script>
+<script type="module" src="ui.js"></script>
+</body>
+</html>

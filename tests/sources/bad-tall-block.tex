@@ -1,0 +1,46 @@
+% =============================================================================
+% bad-tall-block -- the text block is stretched to 9.4" deep.
+%
+% \textheight is enlarged by 0.4", fitting ~4 extra lines per page below
+% the allowed 9" block. The overflow appears on every page, so it reads as a
+% systematic block enlargement (error), not a few isolated overflows.
+%
+% Expected checker outcome: FAIL with error [text-block].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+\addtolength{\textheight}{0.4in}
+
+\date{}
+\title{\Large \bf A Submission with an Overgrown Text Block}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-20]
+
+\section{Design}
+\lipsum[21-45]
+
+\section{Evaluation}
+\lipsum[46-70]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

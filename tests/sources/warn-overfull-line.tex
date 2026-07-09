@@ -1,0 +1,48 @@
+% =============================================================================
+% warn-overfull-line -- an honest mistake: one unbreakable \texttt{} string
+% overflows slightly into the margin (a classic overfull \hbox).
+%
+% The overflow is a few points, far from deliberate squeezing, so the
+% checker reports it for a human glance without failing the paper.
+%
+% Expected checker outcome: PASS, with warning [text-block].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission with One Overfull Line}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\begin{figure*}[t]
+  \noindent
+  \mbox{\texttt{a-very-long-unbreakable-command-line-option-string-that-does-not-quite-fit-into-the-text-block-ok-yes}}
+  \caption{An unbreakable command line that pokes into the margin.}
+\end{figure*}
+
+\section{Design}
+\lipsum[5-7]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,69 @@
+% =============================================================================
+% good-paragraph-labels -- run-in bold labels must not be mistaken for
+% squeezed section headings.
+%
+% A run-in lead-in ("\textbf{Ethical testing.} body...", or \paragraph{}) is a
+% bold, body-size label whose paragraph text continues on the same line. Labels
+% that begin with a word the heading detector knows ("Ethical...", "Open
+% Science...", "Availability...") would otherwise match SECTION_RE, and a tight
+% \textbf run-in sits only ~4 pt below the previous line -- exactly the gap a
+% squeezed section heading would show. Several appear back to back so a
+% regression trips the 2-heading threshold. The checker must skip them because
+% each has body text on the same baseline to its right.
+%
+% Two flavours are covered: tight \textbf run-ins (small gap above, the
+% false-positive case) and \paragraph{} labels (larger built-in gap above).
+%
+% Expected checker outcome: PASS with zero findings.
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf Run-in Paragraph Labels Are Not Headings}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2][1-4]
+
+% tight \textbf run-in labels, clustered with short bodies so several land
+% mid-column ~4 pt below the previous line -- the false-positive
+% shape (bold label, paragraph text continuing on the same baseline).
+% \hspace widens the gap so the label is extracted as its own line.
+\noindent\textbf{Ethical testing of attacks.}\hspace{2em}\lipsum[3][1-1]
+
+\noindent\textbf{Open science release.}\hspace{2em}\lipsum[4][1-1]
+
+\noindent\textbf{Availability of the artifacts.}\hspace{2em}\lipsum[5][1-1]
+
+\noindent\textbf{Ethics of the disclosure.}\hspace{2em}\lipsum[6][1-1]
+
+\noindent\textbf{Open science compliance.}\hspace{2em}\lipsum[7][1-1]
+
+\section{Design}
+\lipsum[8]
+
+% \paragraph{} labels: larger built-in space above
+\paragraph{Ethical review board.} \lipsum[8][1-3]
+\paragraph{Open science statement.} \lipsum[9][1-3]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

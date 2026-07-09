@@ -1,0 +1,48 @@
+% =============================================================================
+% bad-body-too-long -- the main body runs past the 13-page limit.
+%
+% The body only ends (appendices begin) on page 15.
+%
+% Expected checker outcome: FAIL with error [references].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Paper Whose Body Runs Past the Limit}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[1-35]
+
+\section{Design}
+\lipsum[36-70]
+
+\section{Evaluation}
+\lipsum[71-105]
+
+\section{Discussion}
+\lipsum[106-140]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{2}
+\bibitem{osbook} R.~H.\ Arpaci-Dusseau and A.~C.\ Arpaci-Dusseau.
+  \emph{Operating Systems: Three Easy Pieces}. Arpaci-Dusseau Books, 2015.
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

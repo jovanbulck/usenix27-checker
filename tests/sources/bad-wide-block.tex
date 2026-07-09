@@ -1,0 +1,46 @@
+% =============================================================================
+% bad-wide-block -- the text block is widened to ~7.5" across.
+%
+% \textwidth is enlarged by 0.5", so every page's lines run past the right
+% edge of the allowed 7" block. Overflow on most pages reads as a systematic
+% block enlargement (error), unlike a single over-wide table (warning).
+%
+% Expected checker outcome: FAIL with error [text-block].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+\addtolength{\textwidth}{0.5in}
+
+\date{}
+\title{\Large \bf A Submission with an Overgrown Text Width}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-20]
+
+\section{Design}
+\lipsum[21-45]
+
+\section{Evaluation}
+\lipsum[46-70]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

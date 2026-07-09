@@ -1,0 +1,55 @@
+% =============================================================================
+% warn-wide-table -- a full-width table wider than the 7" text block.
+%
+% Fixed-width p{} columns push the tabular past the right edge of the block.
+% A few over-wide lines on one page are an honest formatting slip, so this is
+% a warning, not an error (only a systematic block enlargement errors).
+%
+% Expected checker outcome: PASS with warning [text-block].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission with an Over-Wide Table}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-3]
+
+\begin{table*}[t]
+  \begin{tabular}{p{3.2in}p{3.2in}p{0.8in}}
+    a first column of measurement text that fills its box completely &
+    a second column of measurement text that fills its box completely &
+    an overflow column \\
+    more first-column details of the experiment and its configuration &
+    more second-column details of the experiment and its configuration &
+    outside text \\
+  \end{tabular}
+  \caption{This table is about 7.4" wide.}
+  \label{tab:wide}
+\end{table*}
+
+\section{Design}
+\lipsum[4-6]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,42 @@
+% =============================================================================
+% bad-linespread -- line spacing compressed with \linespread{0.94}.
+%
+% 12 pt leading becomes ~11.3 pt: about 3 extra lines per column, invisible
+% at a glance. This is the squeeze the per-page leading check exists for.
+%
+% Expected checker outcome: FAIL with error [leading].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+\linespread{0.94}
+
+\date{}
+\title{\Large \bf A Submission with Compressed Leading}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-7]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

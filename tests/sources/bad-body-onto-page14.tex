@@ -1,0 +1,51 @@
+% =============================================================================
+% bad-body-onto-page14 -- boundary case: the body spills a little onto page 14.
+%
+% The body text runs past the bottom of page 13 and continues for several
+% lines on page 14 before the end-matter begins, so the main body occupies
+% more than 13 pages. Unlike good-body-at-limit (appendix at the very top of
+% page 14), here actual body text sits above the end heading on page 14.
+%
+% Expected checker outcome: FAIL with error [page-limit].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Paper Whose Body Spills onto Page 14}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[1-32]
+
+\section{Design}
+\lipsum[33-64]
+
+\section{Evaluation}
+\lipsum[65-96]
+
+\section{Discussion}
+\lipsum[97-128]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{2}
+\bibitem{osbook} R.~H.\ Arpaci-Dusseau and A.~C.\ Arpaci-Dusseau.
+  \emph{Operating Systems: Three Easy Pieces}. Arpaci-Dusseau Books, 2015.
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,34 @@
+% =============================================================================
+% bad-missing-appendices -- compliant formatting, but the appendices
+% (Open Science: required; Ethical Considerations: recommended if
+% applicable) are absent.
+%
+% Expected checker outcome: FAIL with error [open-science] and warning
+% [ethics].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission Missing Its Mandatory Appendices}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-7]
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

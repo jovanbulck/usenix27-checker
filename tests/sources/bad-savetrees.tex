@@ -1,0 +1,44 @@
+% =============================================================================
+% bad-savetrees -- the savetrees package in its default (aggressive) setup,
+% explicitly named as forbidden by the CFP.
+%
+% Expected checker outcome: FAIL (savetrees compresses several spacings;
+% at least the section-heading whitespace check fires).
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{savetrees}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Submission Squeezed with savetrees}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\section{Design}
+\lipsum[5-7]
+
+\section{Evaluation}
+\lipsum[8-9]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}
