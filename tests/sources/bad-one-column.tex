@@ -1,10 +1,10 @@
 % =============================================================================
-% warn-one-column -- the paper is set in one column instead of two.
+% bad-one-column -- the paper is set in one column instead of two.
 %
 % \onecolumn after \maketitle switches the layout (usenix.sty cannot be
 % loaded without the twocolumn class option in modern TeX Live).
 %
-% Expected checker outcome: warning [two-column].
+% Expected checker outcome: error [two-column].
 % =============================================================================
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{usenix}

@@ -1,0 +1,60 @@
+% =============================================================================
+% bad-front-matter -- the reserved front-matter space is largely removed.
+%
+% usenix.sty typesets the title block as a fixed "\vbox to 2.5in", so with the
+% 1" top margin the body (its abstract) starts 3.5" down page 1. Redefining
+% that box shorter pulls the whole body up and gains lines without touching a
+% single margin. Here it is shrunk to 0.9in, so the body starts ~1.9" down.
+%
+% The checker measures where the body starts, so it catches this whether or
+% not an author block is present. Below 2.2" the squeeze is unmistakable and
+% errors outright; see bad-front-matter-mild for a subtler pull-up.
+%
+% Expected checker outcome: FAIL with error [front-matter].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+% shrink the reserved title area from the template's 2.5in to 0.9in
+\makeatletter
+\renewcommand\@maketitle{\newpage
+  \vbox to 0.9in{%
+  \vspace*{\fill}
+  \vskip 2em
+  \begin{center}%
+   {\Large\bf \@title \par}%
+   \vskip 0.375in minus 0.300in
+   {\large\it \lineskip .5em
+    \begin{tabular}[t]{c}\@author\end{tabular}\par}%
+  \end{center}%
+  \par
+  \vspace*{\fill}}}
+\makeatother
+
+\date{}
+\title{\Large \bf A Submission with Its Front Matter Removed}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[2-4]
+
+\appendix
+\section*{Ethical Considerations}
+This synthetic test paper raises no ethical concerns.
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{1}
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

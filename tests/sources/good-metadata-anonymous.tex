@@ -1,20 +1,19 @@
 % =============================================================================
-% warn-author-names -- the author block still names authors and affiliations.
+% good-metadata-anonymous -- the PDF metadata author field is itself blinded.
 %
-% A forgotten, non-anonymized author block (names, university, e-mail) instead of an
-% anonymized one ("Anonymous Submission"); nothing in it matches the
-% checker's anonymous-marker heuristic.
+% \hypersetup{pdfauthor={Anonymous Submission}} leaves an author field in the
+% PDF Info dictionary, but it names nobody: the metadata check must not fire.
 %
-% Expected checker outcome: PASS, with warning [anonymity].
+% Expected checker outcome: PASS with zero findings.
 % =============================================================================
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{usenix}
 \usepackage{lipsum}
+\hypersetup{pdfauthor={Anonymous Submission}}
 
 \date{}
-\title{\Large \bf A Submission That Forgot To Anonymize Its Authors}
-\author{{\rm John Smith}\\Acme University\\{\tt jsmith@acme.edu}
-  \and {\rm Mary Jones}\\Example Institute of Technology}
+\title{\Large \bf A Submission With Blinded Metadata}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
 
 \begin{document}
 \maketitle

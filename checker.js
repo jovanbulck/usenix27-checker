@@ -34,21 +34,23 @@ export const RULES = Object.freeze({
 
   fontPt: 10,               // body text nominal size
   fontRendered: 9.96,       // what LaTeX renders for 10 pt Times
-  fontErr: 9.6,
-  fontWarn: 9.9,
+  fontErr: 9.8,             // a 10 pt body measures ~9.96-10.1; the next
+  fontWarn: 9.9,            // standard step down (9.5 pt) measures ~9.46,
+                            // so only measurement noise lives in [9.8, 9.9)
 
   leadingPt: 12,            // single-spaced baselines, per page
-  leadingErr: 11.6,         // (savetrees moderate: 11.4)
-  leadingWarn: 11.9,
+  leadingErr: 11.8,         // 12 pt leading measures 12.0 on the nose;
+  leadingWarn: 11.9,        // savetrees moderate 11.4, \linespread{0.99} 11.9
 
   headingGap: 10.5,         // min whitespace above a heading; template
                             // >= ~12.6, titlesec abuse ~6-8
   titleGapPt: 30,           // whitespace below the page-1 title; the
-  titleGapErr: 12,          // template's \maketitle leaves ~29.8 pt,
+  titleGapErr: 20,          // template's \maketitle leaves ~29.8 pt,
   titleGapWarn: 24,         // savetrees ~7
   bodyStartPt: 3.5 * IN,    // the template's front matter (title + author
-  bodyStartErr: 2.2 * IN,   // block) reserves the top ~3.5"; the body (its
-  bodyStartWarn: 2.8 * IN,  // abstract) begins there. Far above = squeezed.
+  bodyStartMin: 2.8 * IN,   // block) reserves the top ~3.5", where the body
+                            // (its abstract) begins. Starting above this can
+                            // only come from reclaiming that reserved space.
 
   sections: [               // appendices (see CFP), placed after the main
                             // body and before References; they do NOT count
@@ -171,9 +173,10 @@ const MESSAGES = {
 
   "font-family": {
     rule: "font-family",
-    level: "warning",
+    level: "error",
     text: ({ font }) =>
-      `dominant font '${font}' is not a recognized Times variant; please verify`,
+      `dominant font '${font}' is not a recognized Times variant; the ` +
+      "template sets body text in Times Roman",
   },
 
   "leading": {
@@ -188,9 +191,9 @@ const MESSAGES = {
 
   "two-column": {
     rule: "two-column",
-    level: "warning",
+    level: "error",
     text: () =>
-      "the layout does not look two-column; please verify against the template",
+      "the layout does not look two-column; the template sets two columns",
   },
 
   "heading-space": {
@@ -209,9 +212,11 @@ const MESSAGES = {
       `template leaves ~${num(r.titleGapPt)} pt (space-around-title trimming?)`,
   },
 
+  // no warning band: the reserved title area is a fixed height, so a body
+  // starting above it means that space was deliberately reclaimed
   "front-matter": {
     rule: "front-matter",
-    level: ({ top, r }) => (top < r.bodyStartErr ? "error" : "warning"),
+    level: "error",
     text: ({ top, r }) =>
       `page 1: the body starts only ${(top / IN).toFixed(2)}" from the top; the ` +
       `template's title block reserves ~${num(r.bodyStartPt / IN)}" ` +
@@ -220,7 +225,7 @@ const MESSAGES = {
 
   "anonymity": {
     rule: "anonymity",
-    level: "warning",
+    level: "error",
     text: ({ text, affil }) =>
       `the author block ("${text.slice(0, 40)}") does not look anonymized` +
       (affil ? " and appears to name an affiliation or e-mail address" : "") +
@@ -791,12 +796,13 @@ function checkFrontMatter(doc, r) {
   const below = p1.lines.filter((l) => solid(l) && l.y0 > titleBottom)
                         .sort((a, b) => a.y0 - b.y0)[0];
   const gap = below ? below.y0 - titleBottom : null;
+  doc.titleGap = gap;                 // reported in stats (threshold calibration)
   if (gap !== null && gap < r.titleGapWarn) {
     findings.push(report("title-space", { gap, r },
                          { page: 1, bbox: asList(below) }));
   }
   const abstract = p1.lines.find((l) => ABSTRACT_RE.test(l.text));
-  if (abstract && abstract.y0 < r.bodyStartWarn) {
+  if (abstract && abstract.y0 < r.bodyStartMin) {
     findings.push(report("front-matter", { top: abstract.y0, r },
                          { page: 1, bbox: asList(abstract) }));
   }
@@ -846,10 +852,12 @@ function checkRequiredSections(doc, r) {
   return findings;
 }
 
-// Submissions are anonymized: no author name in the PDF metadata.
+// Submissions are anonymized: no author name in the PDF metadata. A field
+// that is itself blinded ("Anonymous Submission", the unfilled template
+// placeholder) names nobody, so it is fine.
 function checkMetadata(doc, r) {
   const author = (doc.author || "").trim();
-  if (!author) return [];
+  if (!author || ANON_RE.test(author) || PLACEHOLDER_RE.test(author)) return [];
   return [report("metadata", { author })];
 }
 
@@ -896,6 +904,7 @@ export function checkDocument(mupdfDoc, rules = RULES) {
       body_font_pt: doc.bodySize,
       body_font_name: doc.bodyFont,
       leading_pt: leading.size ? mode(leading) : null,
+      title_gap_pt: doc.titleGap === undefined ? null : doc.titleGap,
       refs_page: refs ? refs.page : null,
       landmarks,                              // References + appendices, by page
       body_pages_limit: rules.bodyPages,      // ui: "body limit" page caption

@@ -37,17 +37,25 @@
       "ok": false,
       "findings": [["error", "open-science"], ["warning", "ethics"]] },
 
-    { "name": "warn-one-column",
+    { "name": "bad-one-column",
       "purpose": "single-column layout",
-      "ok": false, "findings": [["warning", "two-column"]] },
+      "ok": false, "findings": [["error", "two-column"]] },
+
+    { "name": "bad-font-family",
+      "purpose": "body set in Palatino instead of Times",
+      "ok": false, "findings": [["error", "font-family"]] },
 
     { "name": "bad-metadata-author",
       "purpose": "author name left in PDF metadata",
       "ok": false, "findings": [["error", "metadata"]] },
 
-    { "name": "warn-author-names",
+    { "name": "bad-author-names",
       "purpose": "author block still names authors, affiliation, e-mail",
-      "ok": false, "findings": [["warning", "anonymity"]] },
+      "ok": false, "findings": [["error", "anonymity"]] },
+
+    { "name": "good-metadata-anonymous",
+      "purpose": "a blinded PDF metadata author field ('Anonymous Submission') is fine",
+      "ok": true, "findings": [] },
 
     { "name": "good-dense-table",
       "purpose": "a dense body-size table is not read as squeezed body leading",
@@ -86,6 +94,14 @@
     { "name": "bad-titlesec",
       "purpose": "titlesec-compressed section spacing (forbidden by the CFP)",
       "ok": false, "must": [["error", "heading-space"]] },
+
+    { "name": "bad-front-matter-mild",
+      "purpose": "reserved title area shrunk to 1.4in: body starts ~2.4\" down, still an error",
+      "ok": false, "findings": [["error", "front-matter"]] },
+
+    { "name": "bad-front-matter",
+      "purpose": "reserved title area shrunk to 0.9in: body starts ~1.9\" down, blatant",
+      "ok": false, "must": [["error", "front-matter"]] },
 
     { "name": "bad-title-space",
       "purpose": "\\maketitle whitespace below the title trimmed with \\vspace",
