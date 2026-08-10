@@ -61,6 +61,14 @@
       "purpose": "a dense body-size table is not read as squeezed body leading",
       "ok": true, "findings": [] },
 
+    { "name": "good-nested-headings",
+      "purpose": "stacked \\section/\\subsection/\\subsubsection: LaTeX's own reduced skip is not squeezing",
+      "ok": true, "findings": [] },
+
+    { "name": "good-bold-enum",
+      "purpose": "a tight enumerate with bold labels is not read as squeezed headings",
+      "ok": true, "findings": [] },
+
     { "name": "good-paragraph-labels",
       "purpose": "run-in bold \\paragraph/\\textbf labels are not squeezed headings",
       "ok": true, "findings": [] },
@@ -126,6 +134,7 @@
     { "name": "bad-body-too-long",
       "purpose": "main body ends past page 13",
       "ok": false, "must": [["error", "page-limit"]] },
+
 
     { "name": "bad-squeeze-untouched",
       "purpose": "squeeze deck: untouched template (unfilled placeholder author block, no Open Science appendix)",

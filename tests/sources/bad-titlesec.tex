@@ -3,7 +3,10 @@
 % explicitly named as forbidden by the CFP.
 %
 % \titlespacing* shrinks the whitespace above/below every section heading
-% from the template's ~14-20 pt to ~2 pt.
+% from the template's ~14-20 pt to ~2 pt. The paper nests three heading
+% levels (see good-nested-headings): stacked headings are exempt from the
+% check, so the squeeze must still be caught on the headings that follow
+% body text.
 %
 % Expected checker outcome: FAIL with error [heading-space].
 % =============================================================================
@@ -14,6 +17,7 @@
 
 \titlespacing*{\section}{0pt}{2pt}{2pt}
 \titlespacing*{\subsection}{0pt}{2pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{2pt}{2pt}
 
 \date{}
 \title{\Large \bf A Submission Squeezed with titlesec}
@@ -30,12 +34,18 @@
 \lipsum[2-4]
 
 \section{Design}
+\subsection{Overview}
+\subsubsection{Threat Model}
 \lipsum[5-6]
 
-\subsection{Details}
+\subsection{Details of the Prototype Implementation and Its Runtime}
+\subsubsection{Frontend}
+\paragraph{Machines.}
 \lipsum[7]
 
 \section{Evaluation}
+\subsection{Setup}
+\subsubsection{Hardware}
 \lipsum[8-9]
 
 \appendix

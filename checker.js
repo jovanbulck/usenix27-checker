@@ -99,8 +99,10 @@ const REFS_RE = /^\s*(\d{1,2}|[A-Za-z])?[.\s]*(references|bibliography)\s*$/i;
 const SECTION_RE = new RegExp(
   // a numbered heading is "N[.N] Word" whose word starts with a capital
   // (Title or Sentence case); the uppercase letter after the number keeps out
-  // numbered pseudocode/algorithm lines ("8 end", "15 end")
-  "^(\\d{1,2}(\\.\\d{1,2})*[.\\s]+[A-Z]|Abstract\\b|Acknowledg|Availability\\b|" +
+  // numbered pseudocode/algorithm lines ("8 end", "15 end"), and requiring
+  // whitespace after the number keeps out list items ("1. End users ...":
+  // the template numbers sections "7 Limitations", "2.1 Overview")
+  "^(\\d{1,2}(\\.\\d{1,2})*\\s+[A-Z]|Abstract\\b|Acknowledg|Availability\\b|" +
   "References\\b|Bibliography\\b|Appendix\\b|Ethic|Open Science)");
 const ABSTRACT_RE = /^Abstract\b/;
 const ANON_RE = /anonym|blind|redact|omitt|under (review|submission)|(paper|submission)\s*(#|no\b|number|id)/i;
@@ -765,8 +767,11 @@ function checkHeadingSpace(doc, r) {
         const runIn = p.lines.some((n) => n !== line
           && Math.abs(n.baseline - line.baseline) < 2
           && n.x0 >= line.x1 - 2 && n.x0 < line.x0 + p.width / 2);
+        // stacked headings get LaTeX's own reduced skip (\addvspace takes the
+        // maximum of the pending glue, not the sum), not the author's
+        const stacked = isHeading(doc, above);
         if (gap > 0 && gap < r.headingGap && line.nfonts === 1 && !runIn
-            && SECTION_RE.test(line.text) && isHeading(doc, line)) {
+            && !stacked && SECTION_RE.test(line.text) && isHeading(doc, line)) {
           squeezed.push([p.number, line]);
         }
       }
