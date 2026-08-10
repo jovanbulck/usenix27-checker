@@ -4,13 +4,6 @@ Checks a submission PDF against the formatting requirements in the
 [USENIX Security '27 Call for Papers](https://www.usenix.org/conference/usenixsecurity27/call-for-papers).
 The same code runs for authors and chairs.
 
-> **Pre-release prototype.** This checker is meant to *help* authors and
-> chairs, not to gatekeep: it measures the rendered PDF and can have false
-> positives, and the submission form will include a text field to briefly
-> explain any finding that does not apply to your paper. Comments and
-> feedback are very welcome:
-> [jo.vanbulck@kuleuven.be](mailto:jo.vanbulck@kuleuven.be).
-
 - **Browser**: drop your PDF on the page. Runs fully client-side (MuPDF
   WebAssembly in a Web Worker): the PDF never leaves your machine.
 - **CLI** (Node 18+, nothing to install):
