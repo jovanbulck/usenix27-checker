@@ -87,6 +87,8 @@ const MIN_GAPS = 8;          // don't judge a page's leading on fewer samples
 const PROSE_MIN_FRAC = 0.33; // leading is sampled only below a line at least
                              // this fraction of the text-block width (prose,
                              // not narrow table/figure cells)
+const APPENDIX_SPAN = 2;     // pages: the end-matter landmarks sit together
+                             // (the CFP gives each appendix about a page)
 const MIN_SQUEEZED = 2;      // one compressed heading may be a false positive
 const COLUMN_SHARE = 0.6;    // lines that must sit in one half of the page
 const TITLE_MIN = 13, TITLE_MAX = 17; // the \Large title is ~14.3 pt
@@ -95,6 +97,10 @@ const MERGE_GAP = 16;        // fragments this close share a visual row (the
 
 const TIMES_RE = /times|nimbus|termes|stix|ptmr|txr/i;
 const BOLD_RE = /bold|medi|heavy|black/i; // Nimbus bold = "-Medi"
+// the CFP mandates these appendix titles verbatim ("this appendix must have
+// exactly this title"), optionally numbered or lettered by \appendix
+const EXACT_TITLE_RE =
+  /^(\d{1,2}|[A-Z])?[.\s]*(ethical considerations|open science)\s*$/i;
 const REFS_RE = /^\s*(\d{1,2}|[A-Za-z])?[.\s]*(references|bibliography)\s*$/i;
 const SECTION_RE = new RegExp(
   // a numbered heading is "N[.N] Word" whose word starts with a capital
@@ -561,14 +567,12 @@ export function analyze(doc, rules) {
                    bodyEndPage: pages.length + 1 };
   // Font and leading rules apply to the MAIN BODY: a long bibliography,
   // appendix listings, or tables may legitimately use denser text and must
-  // not skew the dominant size. Locate the end of the body (first of
-  // References or an appendix heading, found with the document-wide guess)
-  // and re-derive the dominant size and font from the body pages only.
-  const markers = [REFS_RE, ...rules.sections.map(([, , pattern]) => pattern)]
-    .map((pattern) => findHeading(result, pattern)).filter(Boolean);
-  if (markers.length) {
-    result.bodyEnd = markers.reduce((a, b) =>
-      b.page < a.page || (b.page === a.page && b.y0 < a.y0) ? b : a);
+  // not skew the dominant size. Locate the end of the body (found with the
+  // document-wide guess) and re-derive the dominant size and font from the
+  // body pages only.
+  result.endMatter = endMatter(result, rules);
+  result.bodyEnd = result.endMatter[0] || null;
+  if (result.bodyEnd) {
     result.bodyEndPage = result.bodyEnd.page;
     if (result.bodyEndPage > 1) {
       const bodySizes = new Map(), bodyFonts = new Map();
@@ -612,17 +616,49 @@ function isHeading(doc, line) {
       || (line.size >= doc.bodySize - BODY_TOL && BOLD_RE.test(line.font));
 }
 
-// First line matching `pattern` that looks like a section heading.
-function findHeading(doc, pattern) {
+// Heading lines in reading order: per page, left column then right, top down.
+function* headings(doc) {
   for (const p of doc.pages) {
-    for (const l of p.lines) {
-      if (pattern.test(l.text) && l.text.length < 60 && isHeading(doc, l)) {
-        return l;
-      }
-    }
+    const column = (l) => (l.x0 > p.width / 2 ? 1 : 0);
+    yield* p.lines.filter((l) => isHeading(doc, l))
+                  .sort((a, b) => column(a) - column(b) || a.y0 - b.y0);
   }
-  return null;
 }
+
+// Where the end matter (the appendices and References) begins: the page
+// limit does not count it. A landmark counts at its LAST occurrence, since
+// ethics may be discussed in the body, or named in the title, long before
+// the appendix; and one standing far ahead of the next is such a mention
+// rather than the start of the appendices.
+function endMatter(doc, rules) {
+  const heads = [...headings(doc)];
+  const landmarks = lastLandmarks(doc, heads, rules);
+  const start = landmarks.find((l, i) => {
+    const next = landmarks[i + 1];
+    // References is never a body mention; an appendix landmark is one unless
+    // the next landmark follows closely (a bibliography can run for pages)
+    return !next || REFS_RE.test(l.text) || next.page - l.page <= APPENDIX_SPAN;
+  });
+  return start ? heads.slice(heads.indexOf(start)) : [];
+}
+
+// The last heading matching each end-matter pattern, in reading order. The
+// CFP's verbatim title wins where a paper uses it, then a title-sized
+// heading: the template's own appendix boilerplate ("... study the Ethics
+// Guidelines ...") is bold body text and matches the loose pattern too.
+function lastLandmarks(doc, heads, rules) {
+  const patterns = [REFS_RE, ...rules.sections.map(([, , pattern]) => pattern)];
+  return patterns
+    .map((re) => {
+      const hits = heads.filter((l) => re.test(l.text));
+      const exact = hits.filter((l) => EXACT_TITLE_RE.test(l.text));
+      const titled = hits.filter((l) => l.size >= doc.bodySize + HEADING_BUMP);
+      return [exact, titled, hits].find((set) => set.length)?.pop();
+    })
+    .filter(Boolean)
+    .sort((a, b) => heads.indexOf(a) - heads.indexOf(b));
+}
+
 
 // --- the checks: each takes (doc, rules) and returns a list of findings ------
 // -----------------------------------------------------------------------------
@@ -850,7 +886,7 @@ function checkPageLimit(doc, r) {
 function checkRequiredSections(doc, r) {
   const findings = [];
   for (const [rule, title, pattern, required] of r.sections) {
-    if (!findHeading(doc, pattern)) {
+    if (!doc.endMatter.some((l) => pattern.test(l.text))) {
       findings.push(report("section-missing", { rule, title, required }));
     }
   }
@@ -892,11 +928,12 @@ export function checkDocument(mupdfDoc, rules = RULES) {
   }
   const findings = CHECKS.flatMap((check) => check(doc, rules));
   findings.sort((a, b) => (a.level !== "error") - (b.level !== "error"));
-  const refs = findHeading(doc, REFS_RE);
+  const refs = doc.endMatter.find((l) => REFS_RE.test(l.text)) || null;
   const leading = new Map();
   for (const [, gap] of bodyGaps(doc)) tally(leading, gap);
   // where the References and each present appendix begin, in page order
-  const landmarks = [refs, ...rules.sections.map(([, , p]) => findHeading(doc, p))]
+  const landmarks = [refs, ...rules.sections.map(([, , p]) =>
+      doc.endMatter.find((l) => p.test(l.text)))]
     .filter(Boolean)
     .map((h) => ({ text: h.text.slice(0, 30), page: h.page, y: h.y0 }))
     .sort((a, b) => a.page - b.page || a.y - b.y);

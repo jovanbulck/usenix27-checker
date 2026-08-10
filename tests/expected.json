@@ -24,6 +24,10 @@
       "purpose": "boundary: end-matter begins at the top of page 14 (body = exactly 13 pages)",
       "ok": true, "findings": [] },
 
+    { "name": "good-refs-before-appendix",
+      "purpose": "appendices placed after References: body still ends at the end matter",
+      "ok": true, "findings": [] },
+
     { "name": "bad-body-onto-page14",
       "purpose": "boundary: body spills a little onto page 14 before the end-matter",
       "ok": false, "must": [["error", "page-limit"]] },
@@ -135,6 +139,14 @@
       "purpose": "main body ends past page 13",
       "ok": false, "must": [["error", "page-limit"]] },
 
+    { "name": "good-ethics-in-body",
+      "purpose": "ethics in the title, the body and the appendix: still a clean pass",
+      "ok": true, "findings": [] },
+
+
+    { "name": "bad-ethics-in-body",
+      "purpose": "an in-body ethics section must not be taken for the end of the body",
+      "ok": false, "must": [["error", "page-limit"]] },
 
     { "name": "bad-squeeze-untouched",
       "purpose": "squeeze deck: untouched template (unfilled placeholder author block, no Open Science appendix)",
