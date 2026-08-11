@@ -32,6 +32,10 @@
       "purpose": "boundary: body spills a little onto page 14 before the end-matter",
       "ok": false, "must": [["error", "page-limit"]] },
 
+    { "name": "bad-body-onto-page14-column",
+      "purpose": "end matter opens the right column of page 14: a full column of body ran on",
+      "ok": false, "must": [["error", "page-limit"]] },
+
     { "name": "good-wide-figure",
       "purpose": "compliant paper with a full-width figure and a table",
       "ok": true, "findings": [] },

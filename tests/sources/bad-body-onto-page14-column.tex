@@ -1,0 +1,62 @@
+% =============================================================================
+% bad-body-onto-page14-column -- the body fills the left column of page 14.
+%
+% The end matter opens the RIGHT column of page 14, at the top of the block,
+% so its y coordinate looks like "the body used exactly 13 pages" -- but a
+% full column of body text sits beside it, half a page past the limit.
+%
+% Expected checker outcome: FAIL with error [page-limit].
+% =============================================================================
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix}
+\usepackage{lipsum}
+
+\date{}
+\title{\Large \bf A Paper Whose Body Fills One More Column}
+\author{{\rm Alice Anonymous}\\One University \and {\rm Bob Blinded}\\Two Institute}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\lipsum[1][1-5]
+\end{abstract}
+
+\section{Introduction}
+\lipsum[1-30]
+
+\section{Design}
+\lipsum[31-60]
+
+\section{Evaluation}
+\lipsum[61-90]
+
+\section{Discussion}
+\lipsum[91-129]
+
+% in two-column mode \newpage ends the COLUMN: the body keeps the left one
+% of page 14 and the end matter opens the right
+\newpage
+\appendix
+\section*{Ethical Considerations}
+
+% numbered list items whose bold label fills the first line: that line is
+% short, bold and starts with "N. Capital", i.e. it looks like a numbered
+% section heading
+\paragraph{Stakeholders}
+\begin{enumerate}
+  \item \textbf{End users of multi-mode embedded systems.} \lipsum[1][1-3]
+  \item \textbf{Vendors and platform developers who ship them.} \lipsum[2][1-3]
+  \item \textbf{The research community studying the platform.} \lipsum[3][1-3]
+\end{enumerate}
+
+\section*{Open Science}
+All artifacts of this test live in the checker repository.
+
+\begin{thebibliography}{2}
+\bibitem{osbook} R.~H.\ Arpaci-Dusseau and A.~C.\ Arpaci-Dusseau.
+  \emph{Operating Systems: Three Easy Pieces}. Arpaci-Dusseau Books, 2015.
+\bibitem{esx} C.~A.\ Waldspurger. Memory resource management in VMware ESX
+  server. In \emph{OSDI}, 2002.
+\end{thebibliography}
+\end{document}

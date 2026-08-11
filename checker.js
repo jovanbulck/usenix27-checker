@@ -68,9 +68,6 @@ export const RULES = Object.freeze({
 const MIN_LINE_CHARS = 5;    // shorter lines (page/listing numbers) are stray marks
 const HEADING_BUMP = 0.8;    // a heading is bold or this much larger than body text
 const WINDOW_SLACK = 2.0;    // ignore sub-2pt excursions outside the text block
-const LIMIT_TOP_SLACK = 18;  // a body-end heading up to ~1.5 lines below the
-                             // block top still counts as the top of the next
-                             // page (body used exactly the page budget)
 const CULPRIT_SHARE = 0.25;  // more offending lines than this share of a page
                              // means the whole page overflows, not a few lines
 const SYSTEMIC_PAGES = 3;    // an enlarged block overflows on more than this
@@ -865,21 +862,34 @@ function checkFrontMatter(doc, r) {
 }
 
 // The main body must fit in the page limit. The body ends where doc.bodyEnd
-// (the first References or appendix heading) begins: the CFP places the
-// mandatory appendices after the body and before References, and they do NOT
-// count toward the limit. So the body fits iff that heading starts within
-// the limit, or at the top of the very next page (the body then used exactly
-// bodyPages full pages); a heading starting lower on that page means body
-// text spilled past the limit.
+// (the first appendix or References heading) begins: the CFP places the
+// mandatory appendices after the body, and they do NOT count toward the
+// limit. So the body fits iff that heading starts within the limit, or opens
+// the very next page (the body then used exactly bodyPages full pages) --
+// body text before it on that page means the body ran on. Note that the top
+// of a column is not the top of a page: end matter heading the RIGHT column
+// still leaves a full column of body text beside it.
 function checkPageLimit(doc, r) {
   const end = doc.bodyEnd;
   if (!end) return [report("page-limit-unknown", { r })];
   const spilled = end.page > r.bodyPages + 1
-    || (end.page === r.bodyPages + 1 && end.y0 > doc.window.y.lo + LIMIT_TOP_SLACK);
+    || (end.page === r.bodyPages + 1 && bodyPrecedes(doc, end));
   return spilled
     ? [report("page-limit-exceeded", { text: end.text, page: end.page, r },
               { page: end.page, bbox: asList(end) })]
     : [];
+}
+
+// Body text before `end` on its page, in reading order. Only body-size prose
+// counts: a figure or table carried over from the previous page is not the
+// body running on.
+function bodyPrecedes(doc, end) {
+  const p = doc.pages[end.page - 1];
+  const column = (l) => (l.x0 > p.width / 2 ? 1 : 0);
+  return p.lines.some((l) => solid(l)
+    && Math.abs(l.size - doc.bodySize) <= BODY_TOL
+    && (column(l) < column(end)
+        || (column(l) === column(end) && l.y1 <= end.y0)));
 }
 
 // The CFP appendices must be present (required -> error, else warning).
